@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { logout as apiLogout, type User } from '../api/client'
-import DashboardPage from './DashboardPage'
+import DashboardChartsPage from './DashboardChartsPage'
+import ProfilePage from './ProfilePage'
 import WeightHistoryPage from './WeightHistoryPage'
 import MeasurementsPage from './MeasurementsPage'
 import NutritionPage from './NutritionPage'
@@ -11,9 +12,10 @@ interface Props {
   onLogout: () => void
 }
 
-type Tab = 'profile' | 'weight' | 'measurements' | 'nutrition' | 'workouts'
+type Tab = 'dashboard' | 'profile' | 'weight' | 'measurements' | 'nutrition' | 'workouts'
 
 const TABS: { key: Tab; label: string }[] = [
+  { key: 'dashboard', label: 'Dashboard' },
   { key: 'profile', label: 'Profile' },
   { key: 'weight', label: 'Weight History' },
   { key: 'measurements', label: 'Measurements' },
@@ -22,7 +24,7 @@ const TABS: { key: Tab; label: string }[] = [
 ]
 
 export default function AuthenticatedShell({ user, onLogout }: Props) {
-  const [tab, setTab] = useState<Tab>('profile')
+  const [tab, setTab] = useState<Tab>('dashboard')
 
   async function handleLogout() {
     await apiLogout().catch(() => {})
@@ -52,7 +54,8 @@ export default function AuthenticatedShell({ user, onLogout }: Props) {
         ))}
       </nav>
 
-      {tab === 'profile' && <DashboardPage />}
+      {tab === 'dashboard' && <DashboardChartsPage />}
+      {tab === 'profile' && <ProfilePage />}
       {tab === 'weight' && <WeightHistoryPage />}
       {tab === 'measurements' && <MeasurementsPage />}
       {tab === 'nutrition' && <NutritionPage />}

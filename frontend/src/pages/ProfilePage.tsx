@@ -8,7 +8,7 @@ const GOAL_OPTIONS: { value: FitnessGoal; label: string }[] = [
   { value: 'improve_fitness', label: 'Improve fitness' },
 ]
 
-export default function DashboardPage() {
+export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [heightCm, setHeightCm] = useState('')
   const [weightKg, setWeightKg] = useState('')

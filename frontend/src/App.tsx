@@ -1,23 +1,45 @@
 import { useEffect, useState } from 'react'
+import { getCurrentUser, type User } from './api/client'
+import LoginPage from './pages/LoginPage'
+import SignupPage from './pages/SignupPage'
+import DashboardPage from './pages/DashboardPage'
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+type View = 'loading' | 'login' | 'signup' | 'dashboard'
 
 function App() {
-  const [status, setStatus] = useState('checking...')
+  const [view, setView] = useState<View>('loading')
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
-    fetch(`${API_URL}/health`)
-      .then((res) => res.json())
-      .then((data) => setStatus(JSON.stringify(data)))
-      .catch(() => setStatus('backend unreachable'))
+    getCurrentUser()
+      .then((u) => {
+        setUser(u)
+        setView('dashboard')
+      })
+      .catch(() => setView('login'))
   }, [])
 
-  return (
-    <div style={{ fontFamily: 'sans-serif', padding: '2rem' }}>
-      <h1>AICoach</h1>
-      <p>Backend health: {status}</p>
-    </div>
-  )
+  function handleAuthenticated(u: User) {
+    setUser(u)
+    setView('dashboard')
+  }
+
+  function handleLogout() {
+    setUser(null)
+    setView('login')
+  }
+
+  if (view === 'loading') return <p style={{ padding: '2rem' }}>Loading...</p>
+
+  if (view === 'signup') {
+    return <SignupPage onSignedUp={handleAuthenticated} onSwitchToLogin={() => setView('login')} />
+  }
+
+  if (view === 'dashboard' && user) {
+    return <DashboardPage user={user} onLogout={handleLogout} />
+  }
+
+  return <LoginPage onLoggedIn={handleAuthenticated} onSwitchToSignup={() => setView('signup')} />
 }
 
 export default App

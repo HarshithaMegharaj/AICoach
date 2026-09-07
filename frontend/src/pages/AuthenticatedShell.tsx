@@ -2,13 +2,20 @@ import { useState } from 'react'
 import { logout as apiLogout, type User } from '../api/client'
 import DashboardPage from './DashboardPage'
 import WeightHistoryPage from './WeightHistoryPage'
+import MeasurementsPage from './MeasurementsPage'
 
 interface Props {
   user: User
   onLogout: () => void
 }
 
-type Tab = 'profile' | 'weight'
+type Tab = 'profile' | 'weight' | 'measurements'
+
+const TABS: { key: Tab; label: string }[] = [
+  { key: 'profile', label: 'Profile' },
+  { key: 'weight', label: 'Weight History' },
+  { key: 'measurements', label: 'Measurements' },
+]
 
 export default function AuthenticatedShell({ user, onLogout }: Props) {
   const [tab, setTab] = useState<Tab>('profile')
@@ -19,7 +26,7 @@ export default function AuthenticatedShell({ user, onLogout }: Props) {
   }
 
   return (
-    <div style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: 480 }}>
+    <div style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: 720 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>AICoach</h1>
         <button type="button" onClick={handleLogout}>
@@ -29,23 +36,21 @@ export default function AuthenticatedShell({ user, onLogout }: Props) {
       <p>Logged in as {user.email}</p>
 
       <nav style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid #ccc', marginBottom: '1rem' }}>
-        <button
-          type="button"
-          onClick={() => setTab('profile')}
-          style={{ fontWeight: tab === 'profile' ? 'bold' : 'normal' }}
-        >
-          Profile
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab('weight')}
-          style={{ fontWeight: tab === 'weight' ? 'bold' : 'normal' }}
-        >
-          Weight History
-        </button>
+        {TABS.map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setTab(key)}
+            style={{ fontWeight: tab === key ? 'bold' : 'normal' }}
+          >
+            {label}
+          </button>
+        ))}
       </nav>
 
-      {tab === 'profile' ? <DashboardPage /> : <WeightHistoryPage />}
+      {tab === 'profile' && <DashboardPage />}
+      {tab === 'weight' && <WeightHistoryPage />}
+      {tab === 'measurements' && <MeasurementsPage />}
     </div>
   )
 }

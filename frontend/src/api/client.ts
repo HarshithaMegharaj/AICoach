@@ -98,3 +98,35 @@ export function createWeightEntry(recordedAt: string, weightKg: number): Promise
 export function deleteWeightEntry(id: number): Promise<void> {
   return request(`/weight-entries/${id}`, { method: 'DELETE' })
 }
+
+export interface BodyMeasurement {
+  id: number
+  recorded_at: string
+  waist_cm: number | null
+  chest_cm: number | null
+  hips_cm: number | null
+  arm_cm: number | null
+  thigh_cm: number | null
+  created_at: string
+}
+
+export interface BodyMeasurementCreate {
+  recorded_at: string
+  waist_cm?: number
+  chest_cm?: number
+  hips_cm?: number
+  arm_cm?: number
+  thigh_cm?: number
+}
+
+export function listBodyMeasurements(): Promise<BodyMeasurement[]> {
+  return request('/body-measurements')
+}
+
+export function createBodyMeasurement(payload: BodyMeasurementCreate): Promise<BodyMeasurement> {
+  return request('/body-measurements', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function deleteBodyMeasurement(id: number): Promise<void> {
+  return request(`/body-measurements/${id}`, { method: 'DELETE' })
+}

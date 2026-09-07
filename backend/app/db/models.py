@@ -2,7 +2,7 @@ import enum
 from datetime import date, datetime
 
 from sqlalchemy import Date, DateTime, Enum as SAEnum, Float, ForeignKey, Integer, String, UniqueConstraint, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
@@ -72,3 +72,62 @@ class BodyMeasurement(Base):
     arm_cm: Mapped[float | None] = mapped_column(Float, nullable=True)
     thigh_cm: Mapped[float | None] = mapped_column(Float, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class MealType(str, enum.Enum):
+    BREAKFAST = "breakfast"
+    LUNCH = "lunch"
+    DINNER = "dinner"
+    SNACK = "snack"
+
+
+class Food(Base):
+    __tablename__ = "foods"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    serving_size: Mapped[str] = mapped_column(String(100), nullable=False)
+    calories_per_serving: Mapped[float] = mapped_column(Float, nullable=False)
+    protein_g: Mapped[float | None] = mapped_column(Float, nullable=True)
+    carbs_g: Mapped[float | None] = mapped_column(Float, nullable=True)
+    fat_g: Mapped[float | None] = mapped_column(Float, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class FoodLogEntry(Base):
+    __tablename__ = "food_log_entries"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    food_id: Mapped[int] = mapped_column(ForeignKey("foods.id", ondelete="CASCADE"), nullable=False)
+    logged_at: Mapped[date] = mapped_column(Date, nullable=False)
+    meal_type: Mapped[MealType] = mapped_column(
+        SAEnum(
+            MealType,
+            native_enum=False,
+            length=16,
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+        ),
+        nullable=False,
+    )
+    quantity: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    food: Mapped[Food] = relationship()
+
+    @property
+    def calories(self) -> float:
+        return self.quantity * self.food.calories_per_serving
+
+    @property
+    def protein_g(self) -> float | None:
+        return None if self.food.protein_g is None else self.quantity * self.food.protein_g
+
+    @property
+    def carbs_g(self) -> float | None:
+        return None if self.food.carbs_g is None else self.quantity * self.food.carbs_g
+
+    @property
+    def fat_g(self) -> float | None:
+        return None if self.food.fat_g is None else self.quantity * self.food.fat_g

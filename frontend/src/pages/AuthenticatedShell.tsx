@@ -3,18 +3,20 @@ import { logout as apiLogout, type User } from '../api/client'
 import DashboardPage from './DashboardPage'
 import WeightHistoryPage from './WeightHistoryPage'
 import MeasurementsPage from './MeasurementsPage'
+import NutritionPage from './NutritionPage'
 
 interface Props {
   user: User
   onLogout: () => void
 }
 
-type Tab = 'profile' | 'weight' | 'measurements'
+type Tab = 'profile' | 'weight' | 'measurements' | 'nutrition'
 
 const TABS: { key: Tab; label: string }[] = [
   { key: 'profile', label: 'Profile' },
   { key: 'weight', label: 'Weight History' },
   { key: 'measurements', label: 'Measurements' },
+  { key: 'nutrition', label: 'Nutrition' },
 ]
 
 export default function AuthenticatedShell({ user, onLogout }: Props) {
@@ -51,6 +53,7 @@ export default function AuthenticatedShell({ user, onLogout }: Props) {
       {tab === 'profile' && <DashboardPage />}
       {tab === 'weight' && <WeightHistoryPage />}
       {tab === 'measurements' && <MeasurementsPage />}
+      {tab === 'nutrition' && <NutritionPage />}
     </div>
   )
 }

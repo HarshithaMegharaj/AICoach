@@ -130,3 +130,70 @@ export function createBodyMeasurement(payload: BodyMeasurementCreate): Promise<B
 export function deleteBodyMeasurement(id: number): Promise<void> {
   return request(`/body-measurements/${id}`, { method: 'DELETE' })
 }
+
+export interface Food {
+  id: number
+  name: string
+  serving_size: string
+  calories_per_serving: number
+  protein_g: number | null
+  carbs_g: number | null
+  fat_g: number | null
+  created_at: string
+}
+
+export interface FoodCreate {
+  name: string
+  serving_size: string
+  calories_per_serving: number
+  protein_g?: number
+  carbs_g?: number
+  fat_g?: number
+}
+
+export function listFoods(): Promise<Food[]> {
+  return request('/foods')
+}
+
+export function createFood(payload: FoodCreate): Promise<Food> {
+  return request('/foods', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function deleteFood(id: number): Promise<void> {
+  return request(`/foods/${id}`, { method: 'DELETE' })
+}
+
+export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
+
+export interface FoodLogEntry {
+  id: number
+  food: Food
+  logged_at: string
+  meal_type: MealType
+  quantity: number
+  calories: number
+  protein_g: number | null
+  carbs_g: number | null
+  fat_g: number | null
+  created_at: string
+}
+
+export interface FoodLogEntryCreate {
+  food_id: number
+  logged_at: string
+  meal_type: MealType
+  quantity?: number
+}
+
+export function listFoodLogEntries(loggedAt?: string): Promise<FoodLogEntry[]> {
+  const query = loggedAt ? `?logged_at=${loggedAt}` : ''
+  return request(`/food-log${query}`)
+}
+
+export function createFoodLogEntry(payload: FoodLogEntryCreate): Promise<FoodLogEntry> {
+  return request('/food-log', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function deleteFoodLogEntry(id: number): Promise<void> {
+  return request(`/food-log/${id}`, { method: 'DELETE' })
+}

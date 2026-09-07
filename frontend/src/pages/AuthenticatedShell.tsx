@@ -4,19 +4,21 @@ import DashboardPage from './DashboardPage'
 import WeightHistoryPage from './WeightHistoryPage'
 import MeasurementsPage from './MeasurementsPage'
 import NutritionPage from './NutritionPage'
+import WorkoutsPage from './WorkoutsPage'
 
 interface Props {
   user: User
   onLogout: () => void
 }
 
-type Tab = 'profile' | 'weight' | 'measurements' | 'nutrition'
+type Tab = 'profile' | 'weight' | 'measurements' | 'nutrition' | 'workouts'
 
 const TABS: { key: Tab; label: string }[] = [
   { key: 'profile', label: 'Profile' },
   { key: 'weight', label: 'Weight History' },
   { key: 'measurements', label: 'Measurements' },
   { key: 'nutrition', label: 'Nutrition' },
+  { key: 'workouts', label: 'Workouts' },
 ]
 
 export default function AuthenticatedShell({ user, onLogout }: Props) {
@@ -54,6 +56,7 @@ export default function AuthenticatedShell({ user, onLogout }: Props) {
       {tab === 'weight' && <WeightHistoryPage />}
       {tab === 'measurements' && <MeasurementsPage />}
       {tab === 'nutrition' && <NutritionPage />}
+      {tab === 'workouts' && <WorkoutsPage />}
     </div>
   )
 }

@@ -197,3 +197,60 @@ export function createFoodLogEntry(payload: FoodLogEntryCreate): Promise<FoodLog
 export function deleteFoodLogEntry(id: number): Promise<void> {
   return request(`/food-log/${id}`, { method: 'DELETE' })
 }
+
+export interface Exercise {
+  id: number
+  name: string
+  category: string | null
+  created_at: string
+}
+
+export interface ExerciseCreate {
+  name: string
+  category?: string
+}
+
+export function listExercises(): Promise<Exercise[]> {
+  return request('/exercises')
+}
+
+export function createExercise(payload: ExerciseCreate): Promise<Exercise> {
+  return request('/exercises', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function deleteExercise(id: number): Promise<void> {
+  return request(`/exercises/${id}`, { method: 'DELETE' })
+}
+
+export interface WorkoutLogEntry {
+  id: number
+  exercise: Exercise
+  logged_at: string
+  sets: number
+  reps: number
+  weight_kg: number | null
+  notes: string | null
+  created_at: string
+}
+
+export interface WorkoutLogEntryCreate {
+  exercise_id: number
+  logged_at: string
+  sets: number
+  reps: number
+  weight_kg?: number
+  notes?: string
+}
+
+export function listWorkoutLogEntries(loggedAt?: string): Promise<WorkoutLogEntry[]> {
+  const query = loggedAt ? `?logged_at=${loggedAt}` : ''
+  return request(`/workout-log${query}`)
+}
+
+export function createWorkoutLogEntry(payload: WorkoutLogEntryCreate): Promise<WorkoutLogEntry> {
+  return request('/workout-log', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function deleteWorkoutLogEntry(id: number): Promise<void> {
+  return request(`/workout-log/${id}`, { method: 'DELETE' })
+}

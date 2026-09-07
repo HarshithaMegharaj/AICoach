@@ -55,3 +55,20 @@ class WeightEntry(Base):
     recorded_at: Mapped[date] = mapped_column(Date, nullable=False)
     weight_kg: Mapped[float] = mapped_column(Float, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class BodyMeasurement(Base):
+    __tablename__ = "body_measurements"
+    __table_args__ = (
+        UniqueConstraint("user_id", "recorded_at", name="uq_body_measurements_user_date"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    recorded_at: Mapped[date] = mapped_column(Date, nullable=False)
+    waist_cm: Mapped[float | None] = mapped_column(Float, nullable=True)
+    chest_cm: Mapped[float | None] = mapped_column(Float, nullable=True)
+    hips_cm: Mapped[float | None] = mapped_column(Float, nullable=True)
+    arm_cm: Mapped[float | None] = mapped_column(Float, nullable=True)
+    thigh_cm: Mapped[float | None] = mapped_column(Float, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

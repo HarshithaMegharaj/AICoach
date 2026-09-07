@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { getCurrentUser, type User } from './api/client'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
-import DashboardPage from './pages/DashboardPage'
+import AuthenticatedShell from './pages/AuthenticatedShell'
 
 type View = 'loading' | 'login' | 'signup' | 'dashboard'
 
@@ -36,7 +36,7 @@ function App() {
   }
 
   if (view === 'dashboard' && user) {
-    return <DashboardPage user={user} onLogout={handleLogout} />
+    return <AuthenticatedShell user={user} onLogout={handleLogout} />
   }
 
   return <LoginPage onLoggedIn={handleAuthenticated} onSwitchToSignup={() => setView('signup')} />

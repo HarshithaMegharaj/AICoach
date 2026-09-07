@@ -1,18 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import {
-  ApiError,
-  getProfile,
-  logout,
-  updateProfile,
-  type FitnessGoal,
-  type Profile,
-  type User,
-} from '../api/client'
-
-interface Props {
-  user: User
-  onLogout: () => void
-}
+import { ApiError, getProfile, updateProfile, type FitnessGoal, type Profile } from '../api/client'
 
 const GOAL_OPTIONS: { value: FitnessGoal; label: string }[] = [
   { value: 'lose_weight', label: 'Lose weight' },
@@ -21,7 +8,7 @@ const GOAL_OPTIONS: { value: FitnessGoal; label: string }[] = [
   { value: 'improve_fitness', label: 'Improve fitness' },
 ]
 
-export default function DashboardPage({ user, onLogout }: Props) {
+export default function DashboardPage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [heightCm, setHeightCm] = useState('')
   const [weightKg, setWeightKg] = useState('')
@@ -65,21 +52,8 @@ export default function DashboardPage({ user, onLogout }: Props) {
     }
   }
 
-  async function handleLogout() {
-    await logout().catch(() => {})
-    onLogout()
-  }
-
   return (
-    <div style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: 480 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>AICoach</h1>
-        <button type="button" onClick={handleLogout}>
-          Log out
-        </button>
-      </div>
-      <p>Logged in as {user.email}</p>
-
+    <div>
       <h2>Profile</h2>
       {loadingProfile ? (
         <p>Loading profile...</p>

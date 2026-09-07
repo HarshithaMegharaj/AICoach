@@ -76,3 +76,25 @@ export function getProfile(): Promise<Profile> {
 export function updateProfile(payload: ProfileUpdate): Promise<Profile> {
   return request('/users/me/profile', { method: 'PATCH', body: JSON.stringify(payload) })
 }
+
+export interface WeightEntry {
+  id: number
+  recorded_at: string
+  weight_kg: number
+  created_at: string
+}
+
+export function listWeightEntries(): Promise<WeightEntry[]> {
+  return request('/weight-entries')
+}
+
+export function createWeightEntry(recordedAt: string, weightKg: number): Promise<WeightEntry> {
+  return request('/weight-entries', {
+    method: 'POST',
+    body: JSON.stringify({ recorded_at: recordedAt, weight_kg: weightKg }),
+  })
+}
+
+export function deleteWeightEntry(id: number): Promise<void> {
+  return request(`/weight-entries/${id}`, { method: 'DELETE' })
+}

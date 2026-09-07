@@ -4,6 +4,7 @@ from sqlalchemy import text
 
 from app.api.auth import router as auth_router
 from app.api.users import router as users_router
+from app.api.weight_entries import router as weight_entries_router
 from app.core.config import settings
 from app.db.session import engine
 
@@ -19,6 +20,7 @@ app.add_middleware(
 
 app.include_router(auth_router)
 app.include_router(users_router)
+app.include_router(weight_entries_router)
 
 
 @app.get("/health")
